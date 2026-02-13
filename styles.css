@@ -20,27 +20,23 @@
 	border-left: var(--dark);
 	border-width: 1px;
 	border-style: solid;
-	border-radius: 1em;
 }
 
 #container {
 	width: 100vw;
 	height: 100dvh;
-	display: grid;
-	place-items: center;
-	grid-template-columns: 3fr 1fr;
+	display: flex;
+	flex-direction: row;
+	/* place-items: center;
+	grid-template-columns: 3fr 1fr; */
 	padding: 2em;
 	background: var(--color);
-
-	> * {
-		width: 100%;
-		height: 100%;
-	}
 }
 
 #workspace {
 	display: grid;
 	place-items: center;
+	width: 100%;
 }
 
 #inputContainer {
@@ -74,7 +70,8 @@
 }
 
 #historyPanel {
-	overflow: hidden;
+	flex-basis: 0;
+	border-radius: 1.5em;
 }
 
 #history {
@@ -82,13 +79,16 @@
 	height: 100%;
 	display: flex;
 	flex-direction: column;
-	align-items: stretch;
 	overflow: auto;
+	scrollbar-width: none;
 	padding: 1em;
 	gap: 1em;
 
 	li {
+		padding: 0.3em 1em;
+		column-gap: 2em;
 		display: grid;
+		max-width: max-content;
 		grid-template-rows: 1fr 1fr / 2fr 6ch 1fr;
 		place-items: center;
 		--percent: 50%;
@@ -172,7 +172,15 @@
 
 @media (max-width: 1200px) {
 	#container {
-		grid-template: 2fr 1fr / 1fr;
+		flex-direction: column;
+	}
+
+	#workspace, #historyPanel {
+		height: 100%;
+	}
+
+	#historyPanel {
+		max-height: max-content;
 	}
 	
 	#history {
