@@ -39,19 +39,34 @@ const getEntryError = ({ exp, obs }) => {
 	return rgbObs.map((c, i) => c - rgbExp[i]);
 };
 
+const getBits = errors => {
+	const percentError = errors
+		.map(err => Math.abs(err))
+		.reduce((a, b) => a + b) / (3 * 255);
+	return Math.log2(1 / percentError);
+};
+
+const mean = list => list.reduce((a, b) => a + b) / list.length;
+
+const getNormalizedErrors = errors => {
+	const mu = mean(errors);
+	return errors.map(err => err - mu);
+};
+
+const getBrightnessError = errors => {
+	return mean(errors);
+};
+
 const createHistoryEntryHTML = entry => {
 	const errors = getEntryError(entry);
 	const { obs, exp } = entry;
-	const percentError = errors
-		.map(err => Math.abs(err))
-		.reduce((a, b) => a + b, 0) / (3 * 255);
-	const score = Math.log2(1 / percentError);
+	
 	return create("li", {
 		style: `--exp: #${exp}; --obs: #${obs};`
 	}, [
 		create("span", { class: "exp" }, exp),
 		create("span", { class: "obs" }, obs),
-		create("span", { class: "score" }, score.toFixed(2) + " bits"),
+		create("span", { class: "score" }, getBits(errors).toFixed(2) + " bits"),
 		create("div", { class: "errors" }, errors.map(err => create(
 			"span", { style: `--error: ${err};` }
 		)))
