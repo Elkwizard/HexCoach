@@ -10,7 +10,7 @@
 }
 
 .glass {
-	backdrop-filter: blur(2em);
+	backdrop-filter: blur(1em);
 	background: rgba(255, 255, 255, 0.5);
 	--dark: rgba(50, 50, 150, 0.2);
 	--light: rgba(255, 255, 255, 0.9);
@@ -20,6 +20,11 @@
 	border-left: var(--dark);
 	border-width: 1px;
 	border-style: solid;
+
+	.glass {
+		background: transparent;
+		backdrop-filter: none;
+	}
 }
 
 #container {
@@ -70,18 +75,42 @@
 }
 
 #historyPanel {
-	flex-basis: 0;
+	flex-basis: max-content;
+	flex-shrink: 0;
 	border-radius: 1.5em;
+	display: flex;
+	flex-direction: column;
+	gap: 1em;
+	padding: 1em;
+	overflow: auto;
+	scrollbar-width: none;
+}
+
+#histogram {
+	width: 100%;
+	aspect-ratio: 3/2;
+	border-radius: 1em;
+	display: flex;
+	flex-direction: row;
+	--gap: 0.4em;
+	justify-content: space-between;
+	align-items: end;
+	padding: 1em;
+	padding-bottom: 0;
+	
+	> span {
+		background: black;
+		--width: calc(var(--base-width) - var(--gap));
+		width: var(--width);
+		height: var(--height);
+		border-radius: 0.2em 0.2em 0 0;
+	}
 }
 
 #history {
 	width: 100%;
-	height: 100%;
 	display: flex;
 	flex-direction: column;
-	overflow: auto;
-	scrollbar-width: none;
-	padding: 1em;
 	gap: 1em;
 
 	li {
@@ -179,10 +208,22 @@
 		height: 100%;
 	}
 
-	#historyPanel {
-		max-height: max-content;
+	#histogram {
+		flex-direction: column;
+		align-items: start;
+		aspect-ratio: 1/2;
+		--gap: 0.1em;
+
+		> span {
+			width: var(--height);
+			height: var(--width);
+		}
 	}
-	
+
+	#historyPanel {
+		flex-direction: row;
+	}
+
 	#history {
 		flex-direction: row;
 		

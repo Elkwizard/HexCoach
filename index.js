@@ -73,6 +73,31 @@ const createHistoryEntryHTML = entry => {
 	]);
 };
 
+const updateHistogram = () => {
+	const values = history.map(entry => getBits(getEntryError(entry)));
+
+	const BINS = 10;
+	const max = Math.max(...values) + 0.001;
+	const min = Math.min(...values);
+	const bin = (max - min) / BINS;
+
+	const bins = new Array(BINS).fill(0);
+
+	for (const val of values)
+		bins[Math.floor((val - min) / bin)] += 1 / values.length;
+
+	$("#histogram").innerHTML = "";
+
+	const maxBin = Math.max(...bins);
+
+	for (let i = 0; i < bins.length; i++) {
+		const bin = bins[i];
+		$("#histogram").appendChild(create("span", {
+			style: `--height: ${bin / maxBin * 100}%; --base-width: ${100 / BINS}%`
+		}));
+	}
+};
+
 const LS_KEY = "hexCoach_ls_1927461762";
 
 const history = JSON.parse(localStorage[LS_KEY] || "[]");
@@ -93,6 +118,7 @@ const endRound = color => {
 };
 
 const startRound = () => {
+	updateHistogram();
 	currentColor = randomHex();
 	$(":root").style.setProperty("--color", `#${currentColor}`);
 	$("#history").scrollTop = 0;
