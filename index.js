@@ -40,14 +40,19 @@ const getEntryError = ({ exp, obs }) => {
 };
 
 const createHistoryEntryHTML = entry => {
-	const error = getEntryError(entry);
+	const errors = getEntryError(entry);
 	const { obs, exp } = entry;
+	const percentError = errors
+		.map(err => Math.abs(err))
+		.reduce((a, b) => a + b, 0) / (3 * 255);
+	const score = Math.log2(1 / percentError);
 	return create("li", {
 		style: `--exp: #${exp}; --obs: #${obs};`
 	}, [
 		create("span", { class: "exp" }, exp),
 		create("span", { class: "obs" }, obs),
-		create("div", { class: "errors" }, error.map(err => create(
+		create("span", { class: "score" }, score.toFixed(2) + " bits"),
+		create("div", { class: "errors" }, errors.map(err => create(
 			"span", { style: `--error: ${err};` }
 		)))
 	]);
